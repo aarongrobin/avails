@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avails</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1>Avails</h1>
+      <div class="my-timezone">
+        <label for="my-timezone">My Timezone:</label>
+        <select id="my-timezone">
+          <option value="auto">Auto-detect</option>
+        </select>
+      </div>
+    </header>
+
+    <!-- Presets -->
+    <div class="presets">
+      <button class="preset-btn active" data-preset="next-5">Next 5 Days</button>
+      <button class="preset-btn" data-preset="next-10">Next 10 Days</button>
+      <button class="preset-btn" data-preset="custom">Custom</button>
+    </div>
+
+    <!-- Custom date picker (hidden by default) -->
+    <div id="custom-dates" class="custom-dates hidden">
+      <div class="date-range-inputs">
+        <div class="date-input-group">
+          <label for="start-date">Start Date:</label>
+          <input type="date" id="start-date">
+        </div>
+        <div class="date-input-group">
+          <label for="end-date">End Date:</label>
+          <input type="date" id="end-date">
+        </div>
+      </div>
+    </div>
+
+    <!-- Date Editor -->
+    <div class="date-editor">
+      <div id="date-lines" class="date-lines">
+        <!-- Date lines will be generated here -->
+      </div>
+    </div>
+
+    <!-- Target Timezones -->
+    <div class="target-timezones">
+      <div class="tz-label-stacked">
+        <div class="tz-line1">ADDITIONAL</div>
+        <div class="tz-line2">TIMEZONES:</div>
+      </div>
+      <div id="tz-buttons" class="tz-buttons"></div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button id="generate-btn" class="generate-btn">Generate Schedule</button>
+    </div>
+
+    <!-- Output -->
+    <div id="output" class="output hidden">
+      <div id="warnings" class="warnings"></div>
+      <pre id="schedule-text"></pre>
+      <button id="copy-btn" class="copy-btn" disabled>Copy Schedule</button>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden">Copied!</div>
+  </div>
+
+  <script src="timezone-data.js"></script>
+  <script src="time-parser.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
