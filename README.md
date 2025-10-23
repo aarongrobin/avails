@@ -21,18 +21,13 @@ A lightweight Chrome extension (Manifest V3) for quickly composing and sharing y
    cd avails
    ```
 
-2. **Generate Icons** (first time only):
-   - Open `generate-icons.html` in your browser
-   - Click "Download All Icons"
-   - Save the three files as `icon16.png`, `icon48.png`, and `icon128.png` in the project root
-
-3. **Load the extension in Chrome**:
+2. **Load the extension in Chrome**:
    - Open Chrome and go to `chrome://extensions/`
    - Enable "Developer mode" (toggle in top right)
    - Click "Load unpacked"
    - Select the folder containing this extension
 
-4. **Use the extension**:
+3. **Use the extension**:
    - Click the Avails icon in your Chrome toolbar
    - Enter your availability
    - Click "Generate Schedule" and "Copy Schedule"
