@@ -3,6 +3,9 @@
 A lightweight Chrome extension (Manifest V3) for quickly composing and sharing your availability across multiple timezones.
 
 
+## Screenshots
+
+
 ## Demo
 
 https://www.loom.com/share/9d316064e98d4ec7916096d57414f8e8
