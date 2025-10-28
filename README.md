@@ -5,6 +5,7 @@ A lightweight Chrome extension (Manifest V3) for quickly composing and sharing y
 
 ## Screenshots
 
+![text](https://github.com/aarongrobin/avails/blob/main/Avails%20Start.jpg)
 
 ## Demo
 
