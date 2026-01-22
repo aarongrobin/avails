@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avails</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="popup.css">
+  <link rel="stylesheet" href="../styles/components.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1>Avails</h1>
+    </header>
+
+    <!-- Date Selection -->
+    <section class="date-selection">
+      <div class="quick-select-buttons">
+        <button id="btn-this-week" class="btn btn-secondary">This Week</button>
+        <button id="btn-next-7" class="btn btn-secondary">Next 7 Days</button>
+        <button id="btn-custom" class="btn btn-secondary">Custom</button>
+      </div>
+
+      <!-- Custom Date Panel (hidden by default) -->
+      <div id="custom-panel" class="custom-panel hidden">
+        <div class="custom-controls">
+          <div class="control-group">
+            <label for="start-date">Start Date</label>
+            <div id="calendar-container" class="calendar-container"></div>
+          </div>
+          <div class="control-group">
+            <label for="num-days">Number of Days</label>
+            <select id="num-days" class="select-input">
+              <option value="1">1 day</option>
+              <option value="2">2 days</option>
+              <option value="3">3 days</option>
+              <option value="4">4 days</option>
+              <option value="5">5 days</option>
+              <option value="6">6 days</option>
+              <option value="7" selected>7 days</option>
+              <option value="10">10 days</option>
+              <option value="14">14 days</option>
+              <option value="21">21 days</option>
+              <option value="30">30 days</option>
+            </select>
+          </div>
+        </div>
+        <button id="btn-apply-custom" class="btn btn-primary">Apply Dates</button>
+      </div>
+    </section>
+
+    <!-- Availability Input -->
+    <section class="availability-section">
+      <div class="input-header">
+        <span class="helper-text">Enter your availability after each date</span>
+      </div>
+      <textarea
+        id="availability-input"
+        class="availability-textarea"
+        placeholder="Click a button above to generate dates, then enter your availability times (e.g., 10-11 AM, 2-3 PM)"
+        spellcheck="false"
+      ></textarea>
+    </section>
+
+    <!-- Timezone Section -->
+    <section class="timezone-section">
+      <div class="source-timezone">
+        <span class="label">Your timezone:</span>
+        <span id="local-timezone" class="timezone-display">Detecting...</span>
+      </div>
+
+      <div class="target-timezone">
+        <span class="label">Convert to:</span>
+        <div class="timezone-picker-container">
+          <div id="selected-timezones" class="selected-timezones"></div>
+          <div class="timezone-input-wrapper">
+            <input
+              type="text"
+              id="timezone-search"
+              class="timezone-search"
+              placeholder="Search timezones..."
+              autocomplete="off"
+            >
+            <div id="timezone-dropdown" class="timezone-dropdown hidden">
+              <div id="tz-favorites" class="tz-section">
+                <div class="tz-section-header">Favorites</div>
+                <div id="tz-favorites-list" class="tz-list"></div>
+              </div>
+              <div id="tz-all" class="tz-section">
+                <div class="tz-section-header">All Timezones</div>
+                <div id="tz-all-list" class="tz-list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Favorite Chips -->
+      <div class="favorites-bar">
+        <div id="favorite-chips" class="favorite-chips"></div>
+      </div>
+    </section>
+
+    <!-- Action Section -->
+    <section class="action-section">
+      <!-- When timezone(s) are pre-selected -->
+      <div id="action-with-tz" class="action-buttons hidden">
+        <button id="btn-create-schedule" class="btn btn-primary btn-large">Create Schedule</button>
+      </div>
+
+      <!-- When no timezone selected - show favorite buttons -->
+      <div id="action-no-tz" class="action-buttons">
+        <div id="quick-tz-buttons" class="quick-tz-buttons">
+          <!-- Populated dynamically with favorite timezone buttons -->
+        </div>
+        <div class="other-tz-wrapper">
+          <select id="other-tz-select" class="select-input">
+            <option value="">Other timezone...</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Status/Feedback -->
+    <div id="status-message" class="status-message hidden"></div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/dateGenerator.js"></script>
+  <script src="../js/timeParser.js"></script>
+  <script src="../js/timezoneManager.js"></script>
+  <script src="../js/storageManager.js"></script>
+  <script src="../js/outputFormatter.js"></script>
+  <script src="../components/calendar.js"></script>
+  <script src="../components/timezonePicker.js"></script>
+  <script src="../components/favoritesManager.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

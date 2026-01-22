@@ -1,35 +1,26 @@
 # Avails - Manual Availability Chrome Extension
 
-A lightweight Chrome extension (Manifest V3) for quickly composing and sharing your availability across multiple timezones.
+A Chrome extension (Manifest V3) for quickly composing and sharing your availability across multiple timezones. Features a side panel interface with smart time parsing and support for 600+ IANA timezones.
 
+> **Looking for v1?** The original popup-based version is available on the [v1 branch](https://github.com/aarongrobin/avails/tree/v1).
 
 ## Screenshots
 
-Chrome Extension
-<br><img src="https://github.com/aarongrobin/avails/blob/main/Avails%20Start.jpg" width="500" heigh=""/>
+*Screenshots coming soon for v2*
 
-Schedule Entered and Formatted
-<br><img src="https://github.com/aarongrobin/avails/blob/main/Avails%20Formatted%20Schedule.jpg" width="500" heigh=""/>
-
-Schedule Entered and Formatted with Multiple Timezones
-<br><img src="https://github.com/aarongrobin/avails/blob/main/Avails%20Formatted%20Schedule%20with%20Multiple%20Timezones.jpg" width="500" heigh=""/>
-
-Custom Dates and Formatted with Multiple Timezones
-<br><img src="https://github.com/aarongrobin/avails/blob/main/Avails%20Formatted%20Custom%20Dates%20Schedule%20with%20Multiple%20Timezones.jpg" width="500" heigh=""/>
-
-
-## Demo
-
-https://www.loom.com/share/9d316064e98d4ec7916096d57414f8e8
+<!-- TODO: Add v2 screenshots -->
 
 ## Features
 
-- 🗓️ **Quick Presets**: Next 5 days, Next 10 days, or custom date ranges
-- 🌍 **Multi-Timezone Support**: Display availability in PST, EST, and GMT
-- ⚡ **Smart Time Parsing**: Flexible input formats (e.g., "10-11 AM", "2-3 PM", "noon-1")
-- 💾 **Auto-Save**: Automatically saves your entries as you type
-- 📋 **One-Click Copy**: Generate and copy formatted schedules to clipboard
-- 🎨 **Clean UI**: Compact, modern design optimized for quick use
+- **Side Panel Interface**: Opens as a Chrome side panel for easy access while browsing
+- **Smart Time Parsing**: Flexible input formats (e.g., "10-11 AM", "2-3 PM", "noon-1", "10a-2p")
+- **600+ Timezones**: Full IANA timezone database with smart search
+- **Favorite Timezones**: Save frequently used timezones for quick access
+- **Auto-Save**: Automatically saves your entries per date as you type
+- **One-Click Copy**: Generate and copy formatted schedules to clipboard
+- **Business Days**: Smart presets for remaining days this week or next 7 business days
+- **Custom Date Ranges**: Select any date range from 1-30+ days
+- **DST Aware**: Automatically handles Daylight Saving Time conversions
 
 ## Installation
 
@@ -37,7 +28,7 @@ https://www.loom.com/share/9d316064e98d4ec7916096d57414f8e8
 
 1. **Clone this repository**:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/avails.git
+   git clone https://github.com/aarongrobin/avails.git
    cd avails
    ```
 
@@ -48,9 +39,10 @@ https://www.loom.com/share/9d316064e98d4ec7916096d57414f8e8
    - Select the folder containing this extension
 
 3. **Use the extension**:
-   - Click the Avails icon in your Chrome toolbar
-   - Enter your availability
-   - Click "Generate Schedule" and "Copy Schedule"
+   - Click the Avails icon in your Chrome toolbar to open the side panel
+   - Enter your availability for each date
+   - Select target timezones for conversion
+   - Click "Copy" to copy the formatted schedule
 
 ## Usage
 
@@ -59,75 +51,96 @@ https://www.loom.com/share/9d316064e98d4ec7916096d57414f8e8
 Enter times in a flexible, natural format:
 - `10-11 AM` or `10-11 am`
 - `2-3 PM` or `2-3pm`
+- `10a-2p` (shorthand)
 - `noon-1` or `12-1`
 - `11 AM - 12 PM` (spaces are fine)
 - Multiple slots: `10-11 AM, 2-3 PM, 5-6 PM`
 
-### Presets
+### Date Presets
 
-- **Next 5 Days**: Shows today + next 4 days (default)
-- **Next 10 Days**: Shows today + next 9 days
-- **Custom**: Select your own start and end dates
+- **Rest of Week**: Remaining business days this week
+- **Next 7 Days**: Next 7 business days (Mon-Fri)
+- **Custom**: Select your own date range
 
-### Additional Timezones
+### Timezone Conversion
 
-Toggle PST, EST, or GMT to show your availability in those timezones alongside your local time.
+1. Click "Add timezone" to select a target timezone
+2. Search by city name, timezone abbreviation, or offset
+3. Star timezones to add them to your favorites
+4. Your local timezone is automatically detected
 
 ## Example Output
 
 ```
-Tue, Oct 22, 2024
-10:00 AM - 11:00 AM PDT
-11:00 AM PDT = 2:00 PM EDT / 6:00 PM GMT
+Monday, January 20
+10:00 AM - 11:00 AM PST
+  = 1:00 PM - 2:00 PM EST
+  = 6:00 PM - 7:00 PM GMT
 
-Wed, Oct 23, 2024
-2:00 PM - 3:00 PM PDT
-2:00 PM PDT = 5:00 PM EDT / 9:00 PM GMT
+Tuesday, January 21
+2:00 PM - 3:00 PM PST
+  = 5:00 PM - 6:00 PM EST
+  = 10:00 PM - 11:00 PM GMT
 ```
 
 ## Technical Details
 
 - **Manifest Version**: 3
-- **Permissions**: `storage`, `clipboardWrite`
+- **Permissions**: `storage`, `sidePanel`
+- **Chrome Version**: 114+ (required for Side Panel API)
 - **Storage**: Uses Chrome's `chrome.storage.local` API
 - **Framework**: Vanilla JavaScript (no dependencies)
-- **Browser Support**: Chrome, Edge, and other Chromium-based browsers
+- **Timezone Data**: Uses browser's native `Intl` API
 
 ## Project Structure
 
 ```
 avails/
-├── manifest.json          # Extension configuration
-├── popup.html            # Main UI structure
-├── popup.css             # Styling
-├── popup.js              # Core functionality
-├── time-parser.js        # Time parsing utilities
-├── timezone-data.js      # Timezone definitions
-├── icon16.png            # 16x16 icon
-├── icon48.png            # 48x48 icon
-├── icon128.png           # 128x128 icon
-├── generate-icons.html   # Icon generator tool
-├── DESIGN_DECISIONS.md   # Architecture notes
-├── VERSION_NOTES.md      # Version history
-└── README.md             # This file
+├── manifest.json           # Extension configuration
+├── background.js           # Service worker for side panel
+├── popup/                  # Popup interface (toolbar click)
+│   ├── popup.html
+│   ├── popup.js
+│   └── popup.css
+├── sidepanel/              # Main side panel interface
+│   ├── sidepanel.html
+│   ├── sidepanel.js
+│   └── sidepanel.css
+├── js/                     # Core modules
+│   ├── dateGenerator.js    # Date generation utilities
+│   ├── timeParser.js       # Smart time parsing
+│   ├── timezoneManager.js  # Timezone operations
+│   ├── outputFormatter.js  # Schedule formatting
+│   └── storageManager.js   # Chrome storage wrapper
+├── components/             # UI components
+│   ├── calendar.js         # Date picker
+│   ├── timezonePicker.js   # Timezone search/select
+│   └── favoritesManager.js # Favorite timezones
+├── styles/
+│   └── components.css      # Shared component styles
+├── icons/                  # Extension icons
+│   ├── icon-16.png
+│   ├── icon-32.png
+│   ├── icon-48.png
+│   └── icon-128.png
+└── README.md
 ```
-
-## Development
-
-### Making Changes
-
-1. Edit the source files
-2. Go to `chrome://extensions/`
-3. Click the refresh icon on the Avails extension
-4. Test your changes
-
-### Design Philosophy
-
-See [DESIGN_DECISIONS.md](DESIGN_DECISIONS.md) for detailed information about architecture and design choices.
 
 ## Version History
 
-See [VERSION_NOTES.md](VERSION_NOTES.md) for version-specific notes and changelog.
+### v2.0.0 (Current)
+- Complete rewrite with side panel interface
+- Support for 600+ IANA timezones
+- Favorite timezones feature
+- Improved time parsing
+- Per-date availability storage
+- Modern modular architecture
+
+### v1.0.0
+- Original popup-based implementation
+- Available on [v1 branch](https://github.com/aarongrobin/avails/tree/v1)
+
+See [VERSION_NOTES.md](VERSION_NOTES.md) for detailed changelog.
 
 ## License
 
@@ -135,12 +148,8 @@ MIT License - Feel free to use and modify as needed.
 
 ## Contributing
 
-This is a personal project, but suggestions and improvements are welcome! Feel free to open an issue or submit a pull request.
-
-## Author
-
-Created for quick availability scheduling across timezones.
+Suggestions and improvements are welcome! Feel free to open an issue or submit a pull request.
 
 ---
 
-**Note**: This extension stores data locally in your browser. Your availability data never leaves your machine.
+**Privacy**: This extension stores data locally in your browser. Your availability data never leaves your machine.

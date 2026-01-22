@@ -1,44 +1,57 @@
-# Avails v9
+# Avails Version History
 
-## Starting Point (Copied from v8)
+## v2.0.0 (January 2026) - Current
 
-### Current Features
-- **Preset Options**: Next 5 Days (default), Next 10 Days, Custom
-- **Custom Date Picker**: Allows selecting date ranges (today and future dates only)
-- **Date Input Lines**: Clean, compact layout with date labels and time input boxes
-- **Timezone Support**: Additional timezones section (PST, EST, GMT) centered without box
-- **Help Text**: Inline help text above first input showing time format examples
-- **Storage**: Persists entered times using chrome.storage
-- **Generate & Copy**: Creates formatted schedule with copy-to-clipboard functionality
+Complete rewrite with side panel interface and enhanced timezone support.
 
-### UI Characteristics
-- **Compact Design**: 320px width, minimal padding and spacing
-- **Date Labels**: 90px wide, 11px font
-- **Input Boxes**: Flexible width with 32px gap from date labels
-- **Timezone Section**: Centered, no background box, stacked "ADDITIONAL TIMEZONES" label
-- **Clean Spacing**: 6px bottom margin after date lines, balanced whitespace
+### New Features
+- **Side Panel Interface**: Opens as a Chrome side panel instead of popup
+- **600+ Timezones**: Full IANA timezone database with smart search
+- **Favorite Timezones**: Save and quickly access frequently used timezones
+- **Smart Defaults**: US-based users automatically get other US timezones as favorites
+- **Per-Date Storage**: Saves availability entries for each specific date
+- **Business Day Presets**: "Rest of Week" and "Next 7 Business Days" options
+- **Improved Time Parsing**: Better support for shorthand formats like "10a-2p"
+- **DST Awareness**: Automatic Daylight Saving Time handling
+
+### Architecture Changes
+- Modular JavaScript architecture with separate utility modules
+- Service worker background script for side panel management
+- Component-based UI (calendar, timezone picker, favorites manager)
+- Uses browser's native `Intl` API for timezone operations
 
 ### Technical Details
 - Manifest Version 3
-- Vanilla JavaScript (no frameworks)
-- Chrome storage API for persistence
-- Local timezone detection and parsing
-- Custom time parser with flexible input formats
-- Icon references added (need to generate icon files)
-
-### Files Included
-- `manifest.json` - Extension configuration
-- `popup.html` - Main UI structure
-- `popup.css` - Styling
-- `popup.js` - Core functionality and UI logic
-- `time-parser.js` - Time parsing utilities
-- `timezone-data.js` - Timezone definitions and formatting
-- `README.md` - General documentation
-- `DESIGN_DECISIONS.md` - Architecture and design notes
-
-### Ready for v9 Development
-This folder contains a clean copy of the v8 extension, ready for further enhancements and modifications.
+- Permissions: `storage`, `sidePanel`
+- Requires Chrome 114+ (Side Panel API)
+- No external dependencies
 
 ---
-*Created: October 22, 2025*
 
+## v1.0.0 (October 2025)
+
+Original popup-based implementation.
+
+### Features
+- Quick presets: Next 5 Days, Next 10 Days, Custom
+- Multi-timezone display: PST, EST, GMT
+- Smart time parsing with flexible formats
+- Auto-save functionality
+- One-click copy to clipboard
+- Compact 320px popup design
+
+### Technical Details
+- Manifest Version 3
+- Permissions: `storage`, `clipboardWrite`
+- Vanilla JavaScript (no frameworks)
+
+### Files
+- `popup.html`, `popup.css`, `popup.js`
+- `time-parser.js`, `timezone-data.js`
+- Icon files (16px, 48px, 128px)
+
+> **Note**: v1.0.0 is available on the [v1 branch](https://github.com/aarongrobin/avails/tree/v1)
+
+---
+
+*Last updated: January 2026*
