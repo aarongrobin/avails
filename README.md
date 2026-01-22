@@ -6,9 +6,17 @@ A Chrome extension (Manifest V3) for quickly composing and sharing your availabi
 
 ## Screenshots
 
-*Screenshots coming soon for v2*
+**Initial View** - Enter your availability for upcoming business days
+<br><img src="screenshots/v2/01-empty-state.jpg" width="400"/>
 
-<!-- TODO: Add v2 screenshots -->
+**Generated Schedule** - Smart time parsing with formatted output ready to copy
+<br><img src="screenshots/v2/02-generated-schedule.jpg" width="400"/>
+
+**Custom Date Range** - Calendar picker for selecting specific date ranges
+<br><img src="screenshots/v2/03-custom-dates.jpg" width="400"/>
+
+**Smart Validation** - Helpful error messages and timezone warnings
+<br><img src="screenshots/v2/04-validation.jpg" width="400"/>
 
 ## Features
 
