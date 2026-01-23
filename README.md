@@ -2,6 +2,8 @@
 
 A Chrome extension (Manifest V3) for quickly composing and sharing your availability across multiple timezones. Features a side panel interface with smart time parsing and support for 600+ IANA timezones.
 
+[![Install from Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Install-blue?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/avails/ghmbgopmfhcnaopfionodmjdfcpkokpl)
+
 > **Looking for v1?** The original popup-based version is available on the [v1 branch](https://github.com/aarongrobin/avails/tree/v1).
 
 ## Screenshots
@@ -32,6 +34,10 @@ A Chrome extension (Manifest V3) for quickly composing and sharing your availabi
 
 ## Installation
 
+### From Chrome Web Store (Recommended)
+
+**[Install Avails from the Chrome Web Store](https://chromewebstore.google.com/detail/avails/ghmbgopmfhcnaopfionodmjdfcpkokpl)**
+
 ### From Source
 
 1. **Clone this repository**:
@@ -46,11 +52,12 @@ A Chrome extension (Manifest V3) for quickly composing and sharing your availabi
    - Click "Load unpacked"
    - Select the folder containing this extension
 
-3. **Use the extension**:
-   - Click the Avails icon in your Chrome toolbar to open the side panel
-   - Enter your availability for each date
-   - Select target timezones for conversion
-   - Click "Copy" to copy the formatted schedule
+### Usage
+
+1. Click the Avails icon in your Chrome toolbar to open the side panel
+2. Enter your availability for each date
+3. Select target timezones for conversion
+4. Click "Copy" to copy the formatted schedule
 
 ## Usage
 
