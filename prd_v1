@@ -1,0 +1,365 @@
+# **PRD — “Manual Availability” Chrome Extension (MV3, Popup-Only)**
+
+## **0) Executive summary**
+
+**Ultimate goal of the project:** ship a tiny, blazing-fast Chrome popup that lets a user manually compose availability by date, optionally mirror it into up to two target time zones with correct DST rules, and copy the final text anywhere—without touching calendars or personal data.
+
+**Ultimate goal of the user:** in <60 seconds, produce a clean, human-readable list of availability that reflects their real-world constraints (context, preferences, nuance), and paste it into email/chat knowing the time zone math is correct.
+
+Non-goals v1: reading calendars, exporting ICS/CSV, creating calendar events/links, analytics/telemetry, background pages, options pages.
+
+---
+
+## **1) Product requirements**
+
+### **1.1 Core user stories (v1, must-have)**
+
+1. **Open popup** by clicking the extension icon or a keyboard shortcut.
+2. **Choose dates** using presets: “This week”, “Next 7 Days”, or “Custom Dates” (future start only, up to 30 days).
+3. **See seeded lines** for each selected date in long format:
+    
+    Monday, October 20, 2025: (blank after colon).
+    
+4. **Type time blocks** per date line, free-form but “intelligently” parsed: 10-11, 2–3 PM, noon–1.
+5. **Optionally add up to 2 target time zones** (IANA-based selector; favorites appear first).
+6. **Create schedule** to render the final text (local first, then each target zone).
+7. **Copy** with one click; get a “Copied!” toast and return focus to editor for quick tweaks.
+
+### **1.2 Nice to have (consider v1.1 or behind feature flag)**
+
+- Anonymous usage counts (no PII), event timing, and error-rate logging.
+- Quick mirror buttons for top-3 favorites (ET/PT/etc.).
+- “Compact view” density toggle.
+
+### **1.3 Constraints**
+
+- MV3, popup-only, minimal permissions (storage, optionally clipboardWrite).
+- No calendar/account access.
+- Small bundle (< 200KB uncompressed target).
+- Work fully offline after install (uses local TZ rules via library).
+
+---
+
+## **2) Functional specification (behavior + UI)**
+
+### **2.1 Information architecture**
+
+- **Popup root**
+    - Header: title + TZ selector (local zone displayed, add up to 2 targets).
+    - Presets row: “This week”, “Next 7 Days”, “Custom Dates”.
+    - Date editor: seeded date lines + multiline text area (one large editable region).
+    - Actions: “Create schedule” (primary), “Copy” (secondary, disabled until a schedule exists).
+    - Toast area for “Copied!” and inline error chips.
+
+### **2.2 Presets logic**
+
+1. **This week**: current week Mon–Sun.
+    - If today is Sun, includes today (Mon–Sun of the current ISO week).
+    - Seed dates >= today (do not include past days from earlier in the week).
+2. **Next 7 Days**: rolling (today + next 6).
+    - Always future-inclusive; if today is selected at time of click, include today.
+3. **Custom Dates**:
+    - Datepicker enforces start ≥ today.
+    - “# of days” dropdown 1–30; auto-seeds sequential dates.
+    - If user changes start date or count, re-seed.
+
+### **2.3 Typing model**
+
+- One **multiline editor** that already contains the seeded date lines. Users type after colons.
+- Allowed inputs per date line: comma-separated blocks (whitespace optional).
+- Examples:
+    
+    9-11, 1-2:30 PM
+    
+    noon-1, 2–3p
+    
+    10 - 11 AM , 2 - 3 PM CT
+    
+- Abbreviations: a/p, am/pm, A/P, noon, midnight, 12p, 12a.
+- Dashes: -, – (en), — (em) all treated as range separators.
+
+### **2.4 Time zone selection**
+
+- Always show **Local** (auto-detected via Intl.DateTimeFormat().resolvedOptions().timeZone).
+- Searchable dropdown of **IANA zones** (with friendly labels).
+- Favorite zones pinned first (persisted in chrome.storage.sync).
+- Max 2 selected target zones at once; chips show selected with remove “x”.
+
+### **2.5 Create schedule**
+
+- Validate + parse the editor content into structured availability for the **seeded date list only**.
+- Mirror each date’s blocks into Local + each selected target zone respecting DST for **that date**.
+- Output string sections:
+    - Central Time (America/Chicago) (example) followed by the date lines with converted blocks.
+    - Then repeat for each target zone in selected order.
+
+### **2.6 Copy UX**
+
+- “Copy” writes the **most recently generated output** to clipboard.
+- Toast “Copied!” appears; focus returns to editor (keyboard users can continue editing → regenerate).
+
+---
+
+## **3) Parsing & inference rules**
+
+### **3.1 Business hours inference (default)**
+
+- Default window: **8:00 AM to 6:00 PM (local)**. Persist user-changes in settings.
+- If a time lacks meridiem (10-11), infer within window:
+    - 10-11 → 10:00 AM–11:00 AM,
+    - 11-2 → 11:00 AM–2:00 PM (end may cross noon),
+    - 12-1 → 12:00 PM–1:00 PM unless 12a explicitly present.
+- noon → 12:00 PM; midnight → 12:00 AM (only if explicitly typed).
+- Explicit meridiem **overrides** inference always.
+
+### **3.2 Date scoping**
+
+- Only parse time blocks on **seeded date lines** (ignore any extra dates user adds by hand; show a gentle warning).
+- A trailing zone token on the line applies to **all blocks** on that line (e.g., CT, CST, CDT, America/Chicago).
+
+### **3.3 Abbreviation→IANA mapping**
+
+- Hard map common US sets: CT/ET/PT/MT + standard/daylight variants and canonical IANA zones (e.g., CT on an October date → America/Chicago with CDT).
+- Ambiguous tokens (IST, CST across Asia/US) trigger an inline zone disambiguation picker; the selected zone is cached **only for that line**.
+
+### **3.4 Overlaps & normalization**
+
+- If user types overlapping ranges for a date, **keep both** but underline the overlap and show “Overlapping ranges” chip; copying still allowed.
+- Normalize all blocks to [start,end) minutes (end-exclusive) during processing.
+
+### **3.5 Error-tolerant tokens**
+
+- Trim commas, extra spaces, trailing punctuation.
+- Accept 2p, 2 pm, 2PM, 2 p m (collapse spaces).
+- Accept unicode digits/varied dashes; normalize to ASCII before parse.
+
+---
+
+## **4) Errors, edge cases, and recovery strategies**
+
+| **Scenario** | **Detection** | **Handling** |
+| --- | --- | --- |
+| Past start date selection (Custom) | Datepicker min=Today | Disable past, show tooltip |
+| User adds unseeded date | Regex date doesn’t match seeded set | Inline warning: “Unknown date; ignored” |
+| Empty date line | After parse, blocks array empty | Allowed; keep blank |
+| Unparseable block | Tokenizer fails | Underline span; inline hint “Can’t parse 11-2q” |
+| Ambiguous TZ abbrev | Mapping finds >1 candidate | Inline picker; selection scoped to this line |
+| Range end <= start | Computed minutes invalid | Underline; hint “End must be after start” |
+| Overlaps | Two normalized blocks overlap | Keep both; show “Overlapping ranges” chip |
+| Outside business hours inference | Inferred time would land outside window | If meridiem missing, bias toward window; else respect explicit |
+| DST boundary day | Zone conversion crosses offset change | Library handles; if crossing gap (rare), show chip “DST transition day” |
+| More than 2 target zones | User attempts 3rd | Prevent selection; toast “Max 2 target zones” |
+| Clipboard blocked | navigator.clipboard error | Fallback: select text in hidden <textarea> and document.execCommand('copy'); failing that, show modal with text to manual copy |
+| Storage quota | chrome.storage.sync rejects | Fallback to local with banner “Sync unavailable; settings saved locally” |
+
+**All errors must be non-fatal and keep the user moving.** Parsing failures should never clear valid content.
+
+---
+
+## **5) Data model & storage**
+
+### **5.1 In-memory types**
+
+type DateKey = string; // '2025-10-20'
+
+type ZoneID = string;  // IANA like 'America/Chicago'
+
+interface TimeBlock {
+
+startMin: number; // minutes from 00:00 local for the date’s source zone
+
+endMin: number;
+
+sourceTZ?: ZoneID; // if the line had a trailing TZ override
+
+rawSpan?: [number, number]; // pre-normalization (for debugging)
+
+}
+
+interface DayAvailability {
+
+date: DateKey;    // seeded date
+
+blocks: TimeBlock[];
+
+errors?: ParseError[];
+
+warnings?: ParseWarning[];
+
+}
+
+interface Model {
+
+seededDates: DateKey[];
+
+days: Record<DateKey, DayAvailability>;
+
+localZone: ZoneID;
+
+targetZones: ZoneID[]; // <=2
+
+}
+
+### **5.2 Persisted settings (chrome.storage.sync)**
+
+interface Settings {
+
+favorites: ZoneID[];               // pin first
+
+businessHours: { start: string; end: string }; // '08:00'..'18:00'
+
+lastPreset?: 'thisWeek'|'next7'|'custom';
+
+lastCustom?: { start: DateKey; days: number };
+
+lastTargets?: ZoneID[];
+
+ui?: { showHints: boolean; density: 'normal'|'compact' };
+
+}
+
+---
+
+## **6) Technical design**
+
+### **6.1 Tech stack**
+
+- **Manifest V3** (action popup, no service worker required for v1).
+- **UI**: Preact or vanilla web components (keep tiny).
+- **Date/TZ**: date-fns + date-fns-tz or luxon (either is fine; Luxon is ergonomic).
+- **Parser**: small custom tokenizer with regex + finite-state interpretation.
+- **Copy**: navigator.clipboard.writeText with graceful fallback.
+- **Logging**: structured console logs gated by DEBUG flag; numeric error codes.
+
+### **6.2 State machine (simplified)**
+
+IDLE → (preset chosen) → SEEDED
+
+SEEDED → (user edits) → EDITING
+
+EDITING → (Create schedule) → PARSING
+
+PARSING → (errors only) → EDITING + inline errors
+
+PARSING → (ok) → RENDERED
+
+RENDERED → (Copy) → COPIED → EDITING
+
+### **6.3 Time zone conversion**
+
+- For each DayAvailability.blocks[], build a date-time in the line’s effective zone (line override or global local).
+- Convert into each target zone with the library’s setZone() method; format with 12-hour clock.
+- Do not correct/merge across zones; present as-is per zone.
+
+---
+
+## **7) UX copy & formatting rules**
+
+- Section headers: Central Time (America/Chicago) etc.
+- Date lines: Monday, October 20, 2025: 10–11 AM, 2–3 PM
+- Time formatting:
+    - H or H:MM (no leading zeros), plus AM/PM.
+    - Use en dash (–) between times in the final output.
+    - Blocks comma-separated; single space after commas.
+
+---
+
+## **8) Accessibility & keyboard**
+
+- All controls labeled with aria-label.
+- Focus order: editor → Create → Copy → TZ selector → Presets.
+- Keyboard shortcut (Manifest commands): default Alt+Shift+A (user can remap in chrome://extensions/shortcuts).
+- Editor supports basic undo/redo; errors are announced via aria-live="polite" region.
+
+---
+
+## **9) Security & privacy**
+
+- No PII collected or transmitted.
+- No analytics in v1.
+- Only storage (sync) and optional clipboardWrite.
+- All timezone logic is local; no network calls.
+- Treat editor content as ephemeral; never persist raw availability text.
+
+---
+
+## **10) Instrumentation (dev-only) & logging**
+
+- DEBUG flag tied to process.env.NODE_ENV !== 'production'.
+- Use **structured logs** with codes:
+    - P001 parse start/stop durations,
+    - P101 tokenization failure,
+    - TZ201 ambiguous TZ,
+    - C301 clipboard success/fail,
+    - S401 storage fallback (sync→local).
+- Include context objects (date, token, zone) but **never** include raw user phrases in production.
+
+Example:
+
+log.debug('P001', { ms: 12, lines: 7, tzTargets: 2 });
+
+log.warn('P101', { token: '11-2q' });
+
+log.info('C301', { method: 'navigator.clipboard', ok: false, fallback: true });
+
+---
+
+## **11) Acceptance criteria**
+
+- Can produce correct mirrored schedules for arbitrary dates in the next 30 days with any combination of blocks using the covered token patterns.
+- Handles ambiguous TZ with inline disambiguation; applies selection only to that line.
+- Copy works in >95% of tested Chrome contexts; fallback visible otherwise.
+- No crashes with malformed input; valid blocks still render.
+- Bundle size under 200KB uncompressed; popup first meaningful paint < 200ms on mid-range hardware.
+
+---
+
+## **12) Implementation plan (phased, numbered)**
+
+### **Phase 1 — Scaffolding (Day 0)**
+
+1. Create MV3 manifest.json with action.default_popup, permissions: ['storage','clipboardWrite'], commands.
+2. Build popup.html + tiny styles.css (system fonts; 320–420px width).
+3. Wire popup.tsx/js root with minimal state and render.
+
+**Sample: manifest.json**
+
+{
+
+"manifest_version": 3,
+
+"name": "Manual Availability",
+
+"version": "0.1.0",
+
+"action": { "default_popup": "popup.html", "default_title": "Manual Availability" },
+
+"permissions": ["storage", "clipboardWrite"],
+
+"commands": {
+
+"open_popup": {
+
+"suggested_key": { "default": "Alt+Shift+A" },
+
+"description": "Open the availability popup"
+
+}
+
+}
+
+}
+
+### **Phase 2 — Presets & seeding (Day 1)**
+
+1. Implement date utilities: today(), isoWeekRange(), addDays(), fmtLongDate(), min=Today enforcement.
+2. Build preset buttons and a simple calendar + “days count (1–30)” control.
+3. Seed editor content: one line per date with colon.
+
+**Sample: seed**
+
+function seedDates(dates) {
+
+return dates.map(d => `${formatLongDate(d)}:`).join('\n');
+
+}
