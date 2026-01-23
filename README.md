@@ -5,17 +5,17 @@ A lightweight Chrome extension (Manifest V3) for quickly composing and sharing y
 
 ## Screenshots
 
-Chrome Extension
-<br><img src="https://github.com/aarongrobin/avails/blob/main/Avails%20Start.jpg" width="500" heigh=""/>
+**Chrome Extension**
+<br><img src="Avails%20Start.jpg" width="500"/>
 
-Schedule Entered and Formatted
-<br><img src="https://github.com/aarongrobin/avails/blob/main/Avails%20Formatted%20Schedule.jpg" width="500" heigh=""/>
+**Schedule Entered and Formatted**
+<br><img src="Avails%20Formatted%20Schedule.jpg" width="500"/>
 
-Schedule Entered and Formatted with Multiple Timezones
-<br><img src="https://github.com/aarongrobin/avails/blob/main/Avails%20Formatted%20Schedule%20with%20Multiple%20Timezones.jpg" width="500" heigh=""/>
+**Schedule Entered and Formatted with Multiple Timezones**
+<br><img src="Avails%20Formatted%20Schedule%20with%20Multiple%20Timezones.jpg" width="500"/>
 
-Custom Dates and Formatted with Multiple Timezones
-<br><img src="https://github.com/aarongrobin/avails/blob/main/Avails%20Formatted%20Custom%20Dates%20Schedule%20with%20Multiple%20Timezones.jpg" width="500" heigh=""/>
+**Custom Dates and Formatted with Multiple Timezones**
+<br><img src="Avails%20Formatted%20Custom%20Dates%20Schedule%20with%20Multiple%20Timezones.jpg" width="500"/>
 
 
 ## Demo
