@@ -1,0 +1,49 @@
+SINGLE PURPOSE DESCRIPTION
+===========================
+Helps users compose and share their availability across multiple timezones by converting local time slots into formatted schedules for emails and messages.
+
+
+PERMISSION: storage
+===================
+Saves user preferences locally including favorite timezones, availability entries, and home timezone setting. Enables settings to persist between sessions. No data is sent to external servers.
+
+
+PERMISSION: sidePanel
+=====================
+Displays the extension interface as a Chrome side panel, allowing users to enter availability while browsing without blocking page content.
+
+
+PRIVACY POLICY
+==============
+Privacy Policy for Avails
+
+Last updated: January 2026
+
+Data Collection
+Avails stores the following data locally in your Chrome browser:
+- Your selected home timezone
+- Favorite timezone preferences
+- Availability entries you type (stored by date)
+
+Data Storage
+All data is stored using Chrome's storage API. If signed into Chrome, data may sync across your devices through your Google account. The developer has no access to this data.
+
+Data Sharing
+We do not:
+- Collect personal information
+- Send data to external servers
+- Share data with third parties
+- Use analytics or tracking
+
+Data Deletion
+Clear all data by clicking "Clear Times" in the extension, removing the extension, or clearing Chrome's extension data in Settings.
+
+Contact
+For questions: [YOUR EMAIL]
+
+
+DATA USE CERTIFICATION
+======================
+Check this box in the form:
+This extension does not collect or use user data
+
