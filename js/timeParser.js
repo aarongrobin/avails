@@ -179,7 +179,13 @@ const TimeParser = {
     // Normalize shorthand: "noon" -> "12" (inferred as PM), "10a"/"2p.m." -> "10 AM"/"2 PM"
     cleanInput = cleanInput
       .replace(/\bnoon\b/gi, '12')
-      .replace(/(\d)\s*([ap])\.?\s*m?\.?(?![a-z])/gi, (_, d, p) => `${d} ${p.toUpperCase()}M`);
+      .replace(/(\d)\s*([ap])\.?\s*m?\.?(?![a-z])/gi, (_, d, p) => `${d} ${p.toUpperCase()}M`)
+      // Period on the start only ("11 AM-12", "9 AM - 5"): an AM start crosses noon when the end is 12 or wraps lower
+      .replace(/^(\d{1,2})((?::\d{2})?)\s*(AM|PM)\s*([-–—])\s*(\d{1,2})((?::\d{2})?)$/i, (_, sh, sm, sp, dash, eh, em) => {
+        const s = parseInt(sh, 10), e = parseInt(eh, 10);
+        const ep = sp.toUpperCase() === 'AM' && (e === 12 || e < s) ? 'PM' : sp.toUpperCase();
+        return `${sh}${sm} ${sp} ${dash} ${eh}${em} ${ep}`;
+      });
 
     let startHour, startMin, endHour, endMin, startPeriod, endPeriod;
 
