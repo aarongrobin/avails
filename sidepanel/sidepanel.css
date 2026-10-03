@@ -280,6 +280,13 @@ body {
   box-shadow: var(--shadow-lg);
   padding: 16px;
   width: 280px;
+  max-width: calc(100vw - 40px);
+}
+
+/* End date sits in the right column, so anchor its calendar to the right edge */
+#end-date-calendar {
+  left: auto;
+  right: 0;
 }
 
 .calendar-dropdown.hidden {
