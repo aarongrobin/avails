@@ -176,6 +176,11 @@ const TimeParser = {
       cleanInput = cleanInput.replace(this.PATTERNS.TIMEZONE_SUFFIX, '').trim();
     }
 
+    // Normalize shorthand: "noon" -> "12" (inferred as PM), "10a"/"2p.m." -> "10 AM"/"2 PM"
+    cleanInput = cleanInput
+      .replace(/\bnoon\b/gi, '12')
+      .replace(/(\d)\s*([ap])\.?\s*m?\.?(?![a-z])/gi, (_, d, p) => `${d} ${p.toUpperCase()}M`);
+
     let startHour, startMin, endHour, endMin, startPeriod, endPeriod;
 
     // Try dual period pattern first (most explicit): "10 AM - 2 PM"
