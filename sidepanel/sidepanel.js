@@ -1904,7 +1904,13 @@ function generateSchedule() {
   }
 
   AppState.generatedOutput = outputLines.join('\n');
-  Elements.outputPreview.textContent = AppState.generatedOutput;
+  // One block per day so entries read apart in the preview; the copied text is unchanged
+  Elements.outputPreview.replaceChildren(...outputLines.map(line => {
+    const el = document.createElement('div');
+    el.className = 'output-line';
+    el.textContent = line;
+    return el;
+  }));
   showOutput();
   showButtonFeedback('generate-feedback');
 }
