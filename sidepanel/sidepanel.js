@@ -238,6 +238,7 @@ async function loadSavedData() {
 
     if (result.savedInputsByDate && typeof result.savedInputsByDate === 'object') {
       AppState.savedInputsByDate = result.savedInputsByDate;
+      pruneSavedInputs();
     }
 
     if (result.localTimezone && typeof result.localTimezone === 'string') {
@@ -260,9 +261,21 @@ async function loadSavedData() {
 }
 
 /**
+ * Drop saved times for dates before today. Times are kept until their date
+ * passes, which also keeps the synced item under Chrome's 8 KB per-item cap.
+ */
+function pruneSavedInputs() {
+  const todayKey = getDateKey(new Date());
+  for (const key of Object.keys(AppState.savedInputsByDate)) {
+    if (key < todayKey) delete AppState.savedInputsByDate[key];
+  }
+}
+
+/**
  * Save data to chrome.storage
  */
 async function saveData() {
+  pruneSavedInputs();
   try {
     await chrome.storage.sync.set({
       favoriteTimezones: AppState.favoriteTimezones,
