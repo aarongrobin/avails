@@ -113,10 +113,6 @@ Tuesday, January 21
 avails/
 ├── manifest.json           # Extension configuration
 ├── background.js           # Service worker for side panel
-├── popup/                  # Popup interface (toolbar click)
-│   ├── popup.html
-│   ├── popup.js
-│   └── popup.css
 ├── sidepanel/              # Main side panel interface
 │   ├── sidepanel.html
 │   ├── sidepanel.js
